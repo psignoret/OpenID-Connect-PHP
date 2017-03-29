@@ -194,7 +194,7 @@ class OpenIDConnectClient
      * @param $provider_url
      */
     public function setProviderURL($provider_url) {
-        $this->providerConfig['issuer'] = $provider_url;
+        $this->providerConfig['provider_url'] = $provider_url;
     }
 
     /**
@@ -668,7 +668,7 @@ class OpenIDConnectClient
             $len = ((int)$bit)/16;
             $expecte_at_hash = $this->urlEncode(substr(hash('sha'.$bit, $accessToken, true), 0, $len));
         }
-        return (($claims->iss == $this->getProviderURL())
+        return (($claims->iss == $this->getProviderConfigValue('issuer'))
             && (($claims->aud == $this->clientID) || (in_array($this->clientID, $claims->aud)))
             && ($claims->nonce == $this->getNonce())
             && ( !isset($claims->exp) || $claims->exp >= time())
@@ -846,10 +846,10 @@ class OpenIDConnectClient
      */
     public function getProviderURL() {
 
-        if (!isset($this->providerConfig['issuer'])) {
+        if (!isset($this->providerConfig['provider_url'])) {
             throw new OpenIDConnectClientException("The provider URL has not been set");
         } else {
-            return $this->providerConfig['issuer'];
+            return $this->providerConfig['provider_url'];
         }
     }
 
